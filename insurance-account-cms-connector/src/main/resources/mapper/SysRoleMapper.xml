@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.insurance.account.cms.connector.mapper.SysRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.net.insurance.account.cms.connector.entity.SysRole">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="state" property="state" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="op_version" property="opVersion" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, `name`, `state`, remark, create_time, update_time, op_version, deleted
+    </sql>
+
+    <select id="countByName" resultType="long">
+        select count(1) from sys_role where `name` = #{name} and deleted = 0
+        <if test="noteqId!=null">
+            and id != #{noteqId}
+        </if>
+    </select>
+
+
+    <select id="listPage"  resultMap="BaseResultMap" parameterType="cn.net.insurance.account.common.dto.req.RoleQueryPageReqDto">
+        select <include refid="Base_Column_List"/>
+        from sys_role where deleted = 0
+        <if test="queryReqDto.name!=null">
+            and `name` like concat('%', #{queryReqDto.name}, '%')
+        </if>
+        <if test="queryReqDto.state!=null">
+            and `state` = #{queryReqDto.state}
+        </if>
+    </select>
+
+
+    <select id="listAll"  resultMap="BaseResultMap">
+        select  id, `name`, `state`, remark
+        from sys_role where deleted = 0
+    </select>
+
+    <select id="listByAccountId"  resultMap="BaseResultMap" parameterType="java.lang.String">
+        select  t1.id, t1.`name`
+        from sys_role t1
+        inner join sys_account_role t2 on t2.role_id = t1.id
+        where t1.deleted = 0 and t2.deleted = 0 and t2.account_id=#{accountId}
+    </select>
+
+</mapper>

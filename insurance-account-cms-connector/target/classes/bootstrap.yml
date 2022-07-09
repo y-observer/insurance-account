@@ -1,0 +1,41 @@
+server:
+  port: 8050
+  servlet:
+    context-path: /account
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: insurance-account-cms-connector
+  cloud:
+    nacos:
+      config:
+        group: ${spring.profiles.active}
+        prefix: ${spring.application.name}
+        file-extension: yml
+        shared-configs:
+          - dataId: insurance-compensate-baseconfig-${spring.profiles.active}.yml
+            group: ${spring.profiles.active}
+            refresh: true
+          - dataId: insurance-compensate-common-${spring.profiles.active}.yml
+            group: ${spring.profiles.active}
+            refresh: true
+          - dataId: logback-desensitize.yml
+            group: ${spring.profiles.active}
+            refresh: true
+        max-retry: 10
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 169.254.115.209:8848
+        namespace: 8d263ac8-356f-4074-88bb-19e3a20a325b
+      config:
+        server-addr: 169.254.115.209:8848
+        namespace: 8d263ac8-356f-4074-88bb-19e3a20a325b

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.insurance.account.cms.connector.mapper.SysPermissionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.net.insurance.account.cms.connector.entity.SysPermission">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="route_url" property="routeUrl"/>
+        <result column="route_param" property="routeParam"/>
+        <result column="component_url" property="componentUrl"/>
+        <result column="visit_type" property="visitType"/>
+        <result column="btn_type" property="btnType"/>
+        <result column="auth" property="auth"/>
+        <result column="icon" property="icon"/>
+        <result column="sort" property="sort"/>
+        <result column="state" property="state"/>
+        <result column="show_state" property="showState"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="op_version" property="opVersion"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, parent_id, `name`,route_url, route_param, component_url, visit_type, btn_type, auth, icon, sort, `state`, show_state,
+        create_time, update_time, op_version, deleted
+    </sql>
+
+    <select id="listAuthCodeByAccountId" resultType="string">
+        select t1.auth
+        from sys_permission t1
+        <choose>
+            <when test="accountId=='-1'">
+                where t1.deleted= 0 and t1.`state`=1
+            </when>
+            <otherwise>
+                inner join sys_role_permission t2 on t1.id=t2.permission_id and t2.deleted = 0
+                inner join sys_account_role t3 on t2.role_id=t3.role_id and t3.account_id=#{accountId} and t3.deleted =
+                0
+                where t1.deleted = 0 and t1.`state`=1
+            </otherwise>
+        </choose>
+        <if test="btnType!=0">
+            and t1.btn_type=#{btnType}
+        </if>
+        and t1.auth is not null and t1.auth != ""
+    </select>
+
+    <select id="leftMenuList4Admin" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_permission where deleted = 0 and `state`=1 and btn_type in (1,2)
+    </select>
+
+    <select id="leftMenuList4Account" resultMap="BaseResultMap" parameterType="string">
+        select
+            t1.id, t1.parent_id, t1.`name`,t1.route_url, t1.route_param, t1.component_url, t1.visit_type, t1.btn_type, t1.auth, t1.icon, t1.sort, t1.`state`, t1.show_state,
+            t1.create_time
+        from sys_permission t1
+        inner join sys_role_permission t2 on t1.id=t2.permission_id and t1.deleted = 0 and  t2.deleted = 0
+        inner join sys_role t4 on t4.id = t2.role_id and t4.deleted = 0 and  t4.state=1
+        inner join sys_account_role t3 on t2.role_id=t3.role_id and t3.account_id=#{accountId} and t3.deleted = 0
+        where t1.deleted = 0 and t1.`state`=1 and t1.btn_type in (1,2)
+    </select>
+    <select id="listByParams" resultMap="BaseResultMap"
+            parameterType="cn.net.insurance.account.common.dto.req.PermissionTreeNodeReqDto">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_permission where deleted = 0
+        <if test="queryReqDto.name!=null and queryReqDto.name !=''">
+            and `name` like concat('%', #{queryReqDto.name}, '%')
+        </if>
+        <if test="queryReqDto.state!=null">
+            and `state` = #{queryReqDto.state}
+        </if>
+    </select>
+
+    <select id="listAllPermission" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_permission where deleted = 0
+    </select>
+
+    <select id="listAuthByAccountId" resultMap="BaseResultMap" parameterType="string">
+        select
+        t1.id, t1.`name`,t1.route_url, t1.component_url,t1.`auth`,t1.`route_param`
+        from sys_permission t1
+        <choose>
+            <when test="accountId=='-1'">
+                and deleted= 0 and `state`=1
+            </when>
+            <otherwise>
+                inner join sys_role_permission t2 on t1.id=t2.permission_id and t2.deleted = 0
+                inner join sys_account_role t3 on t2.role_id=t3.role_id and t3.account_id=#{accountId} and t3.deleted =
+                0
+                where t1.deleted = 0 and t1.`state`=1
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

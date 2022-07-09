@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.5.21">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../soft/maven/apache-maven-3.5.3-bin/apache-maven-3.5.3/lib/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.21/kotlin-stdlib-common-1.5.21.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../soft/maven/apache-maven-3.5.3-bin/apache-maven-3.5.3/lib/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.21/kotlin-stdlib-common-1.5.21-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../soft/maven/apache-maven-3.5.3-bin/apache-maven-3.5.3/lib/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.21/kotlin-stdlib-common-1.5.21-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
